@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import json
+from collections.abc import Mapping
 
 import streamlit as st
 import streamlit_authenticator as stauth
@@ -36,16 +36,24 @@ DEMO_COOKIE = {
 }
 
 
-def _to_plain_dict(value: object) -> dict:
-    """Convert Streamlit secrets objects to a mutable plain dict."""
-    return json.loads(json.dumps(value))
+def _to_plain_value(value: object):
+    """Recursively convert Streamlit secrets objects to plain Python values."""
+    if isinstance(value, Mapping):
+        return {str(k): _to_plain_value(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_to_plain_value(v) for v in value]
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return str(value)
 
 
 def _get_secret_section(key: str) -> dict | None:
     """Return a secrets section when secrets.toml exists, else None."""
     try:
         if key in st.secrets:
-            return _to_plain_dict(st.secrets[key])
+            plain = _to_plain_value(st.secrets[key])
+            if isinstance(plain, dict):
+                return plain
     except StreamlitSecretNotFoundError:
         pass
     return None
