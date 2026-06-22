@@ -4,7 +4,9 @@ A Streamlit sample app for the NYU Cloud and API Automation Developer applicatio
 
 ## Live Demo
 
-**URL:** `https://YOUR-APP-NAME.streamlit.app` *(replace after Streamlit Cloud deployment)*
+**GitHub repo:** https://github.com/rishabh0098/av-rbac-sample-app
+
+**Live Streamlit URL:** `https://YOUR-APP-NAME.streamlit.app` *(replace after Streamlit Cloud deployment)*
 
 | Role | Username | Password | Access |
 |------|----------|----------|--------|
