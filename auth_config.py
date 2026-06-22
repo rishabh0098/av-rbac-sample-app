@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import streamlit as st
 import streamlit_authenticator as stauth
+from streamlit.errors import StreamlitSecretNotFoundError
 
 # Pre-hashed demo passwords: tech123 / mgr123
 DEMO_CREDENTIALS = {
@@ -33,15 +34,27 @@ DEMO_COOKIE = {
 }
 
 
+def _get_secret_section(key: str) -> dict | None:
+    """Return a secrets section when secrets.toml exists, else None."""
+    try:
+        if key in st.secrets:
+            return dict(st.secrets[key])
+    except StreamlitSecretNotFoundError:
+        pass
+    return None
+
+
 def _load_credentials() -> dict:
-    if "credentials" in st.secrets:
-        return dict(st.secrets["credentials"])
+    credentials = _get_secret_section("credentials")
+    if credentials:
+        return credentials
     return DEMO_CREDENTIALS
 
 
 def _load_cookie_config() -> dict:
-    if "cookie" in st.secrets:
-        return dict(st.secrets["cookie"])
+    cookie = _get_secret_section("cookie")
+    if cookie:
+        return cookie
     return DEMO_COOKIE
 
 
@@ -50,8 +63,9 @@ def get_role(username: str | None) -> str | None:
     if not username:
         return None
 
-    if "roles" in st.secrets and username in st.secrets["roles"]:
-        return st.secrets["roles"][username]
+    roles = _get_secret_section("roles")
+    if roles and username in roles:
+        return roles[username]
 
     return DEMO_ROLES.get(username)
 

@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+from streamlit.errors import StreamlitSecretNotFoundError
 
 SAMPLE_DATA_DIR = Path(__file__).parent / "sample_data"
 EQUIPMENT_CSV = SAMPLE_DATA_DIR / "av_equipment.csv"
@@ -21,7 +22,7 @@ def has_google_secrets() -> bool:
             and st.secrets["google_sheets"].get("spreadsheet_id")
             not in (None, "", "YOUR_SPREADSHEET_ID")
         )
-    except Exception:
+    except StreamlitSecretNotFoundError:
         return False
 
 

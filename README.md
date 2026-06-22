@@ -8,6 +8,8 @@ A Streamlit sample app for the NYU Cloud and API Automation Developer applicatio
 
 **Live Streamlit URL:** `https://YOUR-APP-NAME.streamlit.app` *(replace after Streamlit Cloud deployment)*
 
+**View source spreadsheets (read-only):** [AV Operations Data](https://docs.google.com/spreadsheets/d/1PpB9EiGQNAhW9G0dVCTMjLKvX3NKFc__pkMpjlL99bM/edit?usp=sharing)
+
 | Role | Username | Password | Access |
 |------|----------|----------|--------|
 | Technician | `tech1` | `tech123` | View spreadsheet data only |
@@ -53,8 +55,7 @@ The app supports two data modes automatically:
 | Demo | No Google secrets configured | Bundled CSVs in `sample_data/` |
 | Live | Google secrets configured | Google Sheets API |
 
-**View-only Google Sheet (optional):** Add your spreadsheet link here after setup:
-`https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit`
+**View-only Google Sheet:** [AV Operations Data](https://docs.google.com/spreadsheets/d/1PpB9EiGQNAhW9G0dVCTMjLKvX3NKFc__pkMpjlL99bM/edit?usp=sharing) — contains tabs `AV Equipment Inventory` and `Staff Shift Schedules`.
 
 ## Project Structure
 
