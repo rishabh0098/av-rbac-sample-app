@@ -1,0 +1,41 @@
+---
+description: Require project-local Python venv; never install packages globally
+alwaysApply: true
+---
+
+# Python Virtual Environment Only
+
+All Python work in this project MUST use a project-local virtual environment. Never install packages globally.
+
+## Rules
+
+- Always create and use `.venv` in the project root
+- Never run `pip install` outside an activated venv
+- Never use `pip install --user` or global pip installs
+- Re-activate the venv before any `python`, `pip`, or `streamlit` command
+
+## Setup
+
+```bash
+cd "/Users/rishabhkumar/NYU Cloud and API Automation Developer Application Sample App"
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Running the app
+
+```bash
+source .venv/bin/activate
+streamlit run app.py
+```
+
+## Examples
+
+```bash
+# BAD — global install
+pip install streamlit
+
+# GOOD — venv install
+source .venv/bin/activate && pip install streamlit
+```

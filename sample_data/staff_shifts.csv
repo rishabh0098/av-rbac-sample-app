@@ -1,0 +1,6 @@
+staff_id,name,role,shift_date,start_time,end_time,location
+S001,Alex Chen,technician,2026-06-22,08:00,16:00,Room 101
+S002,Jordan Lee,manager,2026-06-22,09:00,17:00,Building A
+S003,Sam Rivera,technician,2026-06-23,12:00,20:00,Room 202
+S004,Taylor Brooks,technician,2026-06-22,10:00,18:00,Lobby
+S005,Morgan Kim,manager,2026-06-23,08:00,16:00,Building B

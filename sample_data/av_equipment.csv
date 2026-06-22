@@ -1,0 +1,6 @@
+device_id,device_name,type,location,status,last_maintenance
+projector_1,Main Hall Projector,projector,Room 101,online,2026-05-01
+display_2,Lobby Display,display,Lobby,offline,2026-04-15
+speaker_1,Conference Speaker,audio,Room 202,online,2026-05-10
+camera_1,Studio Camera,camera,Room 303,online,2026-05-18
+mixer_1,Audio Mixer,audio,Room 202,online,2026-04-28
