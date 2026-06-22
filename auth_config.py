@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 import streamlit as st
 import streamlit_authenticator as stauth
 from streamlit.errors import StreamlitSecretNotFoundError
@@ -34,11 +36,16 @@ DEMO_COOKIE = {
 }
 
 
+def _to_plain_dict(value: object) -> dict:
+    """Convert Streamlit secrets objects to a mutable plain dict."""
+    return json.loads(json.dumps(value))
+
+
 def _get_secret_section(key: str) -> dict | None:
     """Return a secrets section when secrets.toml exists, else None."""
     try:
         if key in st.secrets:
-            return dict(st.secrets[key])
+            return _to_plain_dict(st.secrets[key])
     except StreamlitSecretNotFoundError:
         pass
     return None
