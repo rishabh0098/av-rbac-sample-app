@@ -137,15 +137,3 @@ python -c "import streamlit_authenticator as stauth; h = stauth.Hasher(); print(
 ```
 
 Paste the hash into Streamlit Cloud secrets and/or local `secrets.toml`.
-
-## Requirements Met
-
-- **Unified UI:** Fetches and displays AV Equipment Inventory + Staff Shift Schedules together.
-- **RBAC:** Technician (view only) vs Manager (view + device commands).
-- **JSON device control:** Manager "Trigger Device Command" outputs a valid JSON payload simulating AV device control.
-- **Spreadsheet integration:** Google Sheets when configured; bundled CSV demo data as fallback.
-- **Recruiter-friendly:** Live Streamlit Cloud URL works with zero local setup.
-
-## License
-
-Sample application for job submission purposes.
