@@ -61,3 +61,14 @@ def load_shifts() -> pd.DataFrame:
                 "Falling back to bundled sample data."
             )
     return pd.read_csv(SHIFTS_CSV)
+
+
+def clear_data_cache() -> None:
+    """Clear cached spreadsheet data so the next load fetches fresh values."""
+    load_equipment.clear()
+    load_shifts.clear()
+    if has_google_secrets():
+        from sheets_client import fetch_equipment, fetch_shifts
+
+        fetch_equipment.clear()
+        fetch_shifts.clear()

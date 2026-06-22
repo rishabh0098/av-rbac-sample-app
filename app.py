@@ -6,19 +6,64 @@ import pandas as pd
 import streamlit as st
 
 from auth_config import create_authenticator, get_role
-from data_loader import get_data_source_label, load_equipment, load_shifts
+from data_loader import clear_data_cache, get_data_source_label, load_equipment, load_shifts
 from device_control import VALID_COMMANDS, build_device_command
 
 st.set_page_config(
     page_title="AV Operations Dashboard",
     page_icon="📺",
     layout="wide",
+    initial_sidebar_state="collapsed",
 )
+
+st.markdown(
+    """
+    <style>
+        [data-testid="stSidebar"] {display: none;}
+        div[data-testid="column"] [data-testid="stForm"] {
+            padding: 1.25rem 1.5rem 0.5rem;
+            border: 1px solid #2D3440;
+            border-radius: 12px;
+            background: #161B22;
+        }
+        .login-title {
+            text-align: center;
+            margin-bottom: 0.15rem;
+        }
+        .login-hint {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 0.85rem;
+            margin: 0 0 1rem;
+        }
+        .header-role {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.45rem;
+            padding-top: 0.85rem;
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+        .header-role span {
+            color: #9CA3AF;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+LOGIN_FIELDS = {
+    "Form name": "Sign in",
+    "Username": "Username",
+    "Password": "Password",
+    "Login": "Sign in",
+}
 
 authenticator = create_authenticator()
 
 try:
-    authenticator.login()
+    authenticator.login("unrendered")
 except Exception as exc:
     st.error(f"Login error: {exc}")
     st.stop()
@@ -28,27 +73,45 @@ username = st.session_state.get("username")
 name = st.session_state.get("name")
 
 if not auth_status:
-    st.title("AV Operations Dashboard")
-    st.markdown(
-        "Sign in to view AV equipment inventory and staff shift schedules. "
-        "Demo accounts: **tech1** / `tech123` (Technician) or **manager1** / `mgr123` (Manager)."
-    )
-    if auth_status is False:
-        st.error("Username or password is incorrect.")
-    else:
-        st.info("Enter your credentials to continue.")
+    _, login_col, _ = st.columns([1, 1.1, 1])
+    with login_col:
+        st.markdown('<p class="login-title"><strong>AV Operations Dashboard</strong></p>', unsafe_allow_html=True)
+        st.markdown(
+            '<p class="login-hint">AV equipment inventory & staff shift schedules</p>',
+            unsafe_allow_html=True,
+        )
+        try:
+            authenticator.login(fields=LOGIN_FIELDS, key="SignInForm")
+        except Exception as exc:
+            st.error(f"Login error: {exc}")
+            st.stop()
+
+        if auth_status is False:
+            st.error("Invalid username or password.")
+        else:
+            with st.expander("Demo credentials", expanded=True):
+                st.markdown(
+                    "- **Technician:** `tech1` / `tech123`  \n"
+                    "- **Manager:** `manager1` / `mgr123`"
+                )
     st.stop()
 
 role = get_role(username)
+role_label = role.capitalize() if role else "Unknown"
 
-st.title("AV Operations Dashboard")
-header_col1, header_col2, header_col3 = st.columns([3, 1, 1])
-with header_col1:
+title_col, actions_col = st.columns([7, 3])
+with title_col:
+    st.title("AV Operations Dashboard")
     st.caption(f"Signed in as **{name}** (`{username}`)")
-with header_col2:
-    st.metric("Role", role.capitalize() if role else "Unknown")
-with header_col3:
-    authenticator.logout("Logout", "main")
+with actions_col:
+    action_left, action_right = st.columns([1.4, 1])
+    with action_left:
+        st.markdown(
+            f'<div class="header-role"><span>Role</span> <strong>{role_label}</strong></div>',
+            unsafe_allow_html=True,
+        )
+    with action_right:
+        authenticator.logout("Logout", "main")
 
 st.divider()
 
@@ -58,11 +121,10 @@ if data_source == "bundled sample data":
 else:
     st.success(f"Data source: **{data_source}**")
 
-refresh_col1, refresh_col2 = st.columns([1, 5])
+refresh_col1, _ = st.columns([1, 5])
 with refresh_col1:
     if st.button("Refresh data"):
-        load_equipment.clear()
-        load_shifts.clear()
+        clear_data_cache()
         st.rerun()
 
 equipment_df = load_equipment()
