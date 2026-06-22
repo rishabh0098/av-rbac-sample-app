@@ -6,7 +6,7 @@ A Streamlit sample app for the NYU Cloud and API Automation Developer applicatio
 
 **GitHub repo:** https://github.com/rishabh0098/av-rbac-sample-app
 
-**Live Streamlit URL:** `https://YOUR-APP-NAME.streamlit.app` *(replace after Streamlit Cloud deployment)*
+**Live Streamlit URL:** https://av-rbac-sample-app-lvznhepgvsxidsrkqnhppa.streamlit.app/
 
 **View source spreadsheets (read-only):** [AV Operations Data](https://docs.google.com/spreadsheets/d/1PpB9EiGQNAhW9G0dVCTMjLKvX3NKFc__pkMpjlL99bM/edit?usp=sharing)
 
