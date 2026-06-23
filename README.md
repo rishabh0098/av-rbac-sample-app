@@ -73,7 +73,7 @@ sample_data/        # Mock spreadsheet data (CSV)
 No Google credentials required. Uses bundled sample CSVs.
 
 ```bash
-cd "/Users/rishabhkumar/NYU Cloud and API Automation Developer Application Sample App"
+cd ~/workspace/"NYU Cloud and API Automation Developer Application Sample App"
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
