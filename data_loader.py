@@ -16,6 +16,9 @@ SHIFTS_CSV = SAMPLE_DATA_DIR / "staff_shifts.csv"
 def has_google_secrets() -> bool:
     """Return True when Google Sheets credentials are configured."""
     try:
+        # The example secrets file ships with YOUR_SPREADSHEET_ID. Treat that
+        # placeholder as unset so the app stays on bundled CSVs until a real id
+        # is filled in.
         return (
             "google_service_account" in st.secrets
             and "google_sheets" in st.secrets
@@ -31,11 +34,14 @@ def get_data_source_label() -> str:
     return "Google Sheets" if has_google_secrets() else "bundled sample data"
 
 
+# Five-minute cache. clear_data_cache() drops this and the Sheets fetch caches.
 @st.cache_data(ttl=300, show_spinner=False)
 def load_equipment() -> pd.DataFrame:
     """Load AV equipment inventory from Sheets or local CSV."""
     if has_google_secrets():
         try:
+            # Import inside the function so a Sheets failure can fall back to CSV
+            # without sheets_client being required at import time.
             from sheets_client import fetch_equipment
 
             return fetch_equipment()
@@ -70,5 +76,7 @@ def clear_data_cache() -> None:
     if has_google_secrets():
         from sheets_client import fetch_equipment, fetch_shifts
 
+        # fetch_* are cached separately from load_*. Clearing only the loaders
+        # would still return the previous Sheets snapshot.
         fetch_equipment.clear()
         fetch_shifts.clear()

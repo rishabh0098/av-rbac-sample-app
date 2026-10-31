@@ -8,7 +8,8 @@ import streamlit as st
 import streamlit_authenticator as stauth
 from streamlit.errors import StreamlitSecretNotFoundError
 
-# Pre-hashed demo passwords: tech123 / mgr123
+# Used when secrets.toml is missing (local demo, or Cloud before secrets are set).
+# Passwords are bcrypt hashes of tech123 and mgr123 — do not store plaintext.
 DEMO_CREDENTIALS = {
     "usernames": {
         "tech1": {
@@ -29,6 +30,8 @@ DEMO_ROLES = {
     "manager1": "manager",
 }
 
+# Demo-only cookie settings. The signing key is public in source, so a deployed
+# app must override [cookie] in secrets or anyone can forge a session cookie.
 DEMO_COOKIE = {
     "name": "av_rbac_cookie",
     "key": "av_rbac_demo_signing_key_change_in_production",
@@ -60,6 +63,7 @@ def _get_secret_section(key: str) -> dict | None:
 
 
 def _load_credentials() -> dict:
+    # Secrets win so a deployed app can rotate users without a code change.
     credentials = _get_secret_section("credentials")
     if credentials:
         return credentials
@@ -78,6 +82,7 @@ def get_role(username: str | None) -> str | None:
     if not username:
         return None
 
+    # A secrets [roles] entry overrides the demo map for that username.
     roles = _get_secret_section("roles")
     if roles and username in roles:
         return roles[username]
@@ -88,6 +93,8 @@ def get_role(username: str | None) -> str | None:
 def create_authenticator() -> stauth.Authenticate:
     """Create a streamlit-authenticator instance."""
     cookie = _load_cookie_config()
+    # auto_hash=False: stored passwords are already bcrypt hashes. Hashing them
+    # again would reject every login.
     return stauth.Authenticate(
         _load_credentials(),
         cookie["name"],
