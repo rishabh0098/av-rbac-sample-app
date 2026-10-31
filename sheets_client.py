@@ -7,6 +7,7 @@ import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
 
+# Read-only. The dashboard never writes inventory or shift rows.
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets.readonly",
     "https://www.googleapis.com/auth/drive.readonly",
@@ -21,6 +22,8 @@ def _get_service_account_info() -> dict:
     return dict(st.secrets["google_service_account"])
 
 
+# Cache the authorized client for the process lifetime. Sheet rows use
+# cache_data below so they can expire without rebuilding the connection.
 @st.cache_resource(show_spinner=False)
 def get_gspread_client() -> gspread.Client:
     """Create an authenticated gspread client from Streamlit secrets."""

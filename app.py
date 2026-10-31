@@ -16,6 +16,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# The sidebar is unused. Hide it and draw the login form as a centered card.
+# streamlit-authenticator renders inside st.form, so the card styles target that form.
 st.markdown(
     """
     <style>
@@ -53,6 +55,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Widget labels for streamlit-authenticator. Keys are library field names.
 LOGIN_FIELDS = {
     "Form name": "Sign in",
     "Username": "Username",
@@ -62,6 +65,8 @@ LOGIN_FIELDS = {
 
 authenticator = create_authenticator()
 
+# Check the auth cookie without drawing a form. "unrendered" is a
+# streamlit-authenticator location that restores the session and skips the widget.
 try:
     authenticator.login("unrendered")
 except Exception as exc:
@@ -72,6 +77,8 @@ auth_status = st.session_state.get("authentication_status")
 username = st.session_state.get("username")
 name = st.session_state.get("name")
 
+# No valid cookie session: render the sign-in form. A second login() call is
+# required because the first one only inspected the cookie.
 if not auth_status:
     _, login_col, _ = st.columns([1, 1.1, 1])
     with login_col:
@@ -140,6 +147,8 @@ with col_right:
     st.subheader("Staff Shift Schedules")
     st.dataframe(shifts_df, use_container_width=True, hide_index=True)
 
+# Device control is manager-only. Technicians can read both tables but cannot
+# generate commands. Payloads are simulated JSON; nothing is sent to a device.
 if role == "manager":
     st.divider()
     st.subheader("Device Control")
@@ -148,6 +157,7 @@ if role == "manager":
         "simulating a direct AV device instruction."
     )
 
+    # History lives in session state for this browser session only.
     if "command_log" not in st.session_state:
         st.session_state["command_log"] = []
 
@@ -161,6 +171,8 @@ if role == "manager":
         with control_col2:
             selected_command = st.selectbox("Command", list(VALID_COMMANDS))
         with control_col3:
+            # Keep the control on screen for every command so the row does not
+            # reflow; it only applies when the command is volume_set.
             volume_level = st.number_input(
                 "Volume level",
                 min_value=0,

@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 from typing import Any
 
 
+# Commands the manager panel may emit. This module only builds JSON; it does
+# not call a device or write back to the spreadsheet.
 VALID_COMMANDS = ("power_on", "power_off", "input_switch", "volume_set")
 
 
@@ -24,6 +26,7 @@ def build_device_command(
         "device": device,
         "parameters": parameters or {},
         "requested_by": requested_by,
+        # UTC, second precision, Z suffix so payloads compare and sort as text.
         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
     return payload
